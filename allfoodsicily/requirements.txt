@@ -4,16 +4,16 @@
 # Google Gemini SDK
 google-genai>=1.0.0
 
-# Google APIs for Docs
-google-api-python-client>=2.100.0
-google-auth-httplib2>=0.1.0
-google-auth-oauthlib>=1.1.0
+# Google APIs - REMOVED: No longer using Google Docs
+# google-api-python-client>=2.100.0
+# google-auth-httplib2>=0.1.0
+# google-auth-oauthlib>=1.1.0
 
-# Firecrawl non più utilizzato - tutto con Gemini
-# firecrawl-py>=1.0.0
+# Telegram Bot (interactive with handlers + job queue)
+python-telegram-bot[job-queue]>=20.7
 
-# Telegram Bot
-python-telegram-bot>=20.7
+# PDF Generation
+fpdf2>=2.7.0
 
 # Image processing
 Pillow>=10.0.0
@@ -24,12 +24,12 @@ aiohttp>=3.9.0
 # Environment variables
 python-dotenv>=1.0.0
 
-# Date handling
+# Date/timezone handling
 python-dateutil>=2.8.2
+pytz>=2024.1
 
 # Utilities
 tenacity>=8.2.0  # For retry logic
 structlog>=23.1.0  # For structured logging
-schedule>=1.2.0  # For task scheduling
 pydantic>=2.0.0  # For data validation
 

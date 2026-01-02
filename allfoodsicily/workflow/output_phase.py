@@ -1,57 +1,54 @@
-"""Phase 5: Save to Google Docs and send notifications."""
+"""Phase 5: Generate PDFs (no longer saves to Google Docs)."""
 
 import logging
 from typing import List
-from datetime import datetime
 
-from services.google_docs import GoogleDocsService
-from services.telegram_bot import TelegramNotifier
-from models.schemas import Article, GoogleDocInfo
-from config.sources import ALL_SITES
+from services.pdf_generator import PDFGenerator
+from models.schemas import Article
 from utils.logger import logger
 
 logger = logging.getLogger(__name__)
 
 
-def execute_output_phase(articles: List[Article]) -> List[GoogleDocInfo]:
-    """Execute output phase: save to Google Docs and notify.
-    
+def execute_output_phase(articles: List[Article]) -> List[bytes]:
+    """Execute output phase: generate PDFs for articles.
+
+    Note: Google Docs integration has been removed. Articles are now
+    delivered as PDF files via Telegram.
+
     Args:
-        articles: List of articles to save
-        
+        articles: List of articles to convert to PDF
+
     Returns:
-        List of created Google Docs
+        List of PDF bytes (one for each article)
     """
-    logger.info(f"📄 Preparazione salvataggio su Google Docs...")
-    logger.info(f"   📝 Articoli da salvare: {len(articles)}")
-    
-    docs_service = GoogleDocsService()
-    telegram_notifier = TelegramNotifier()
-    
-    docs = []
-    
-    # Save each article to Google Docs
+    logger.info(f"📄 Preparing PDF generation...")
+    logger.info(f"   📝 Articles to convert: {len(articles)}")
+
+    pdf_generator = PDFGenerator()
+    pdf_results = []
+
+    # Generate PDF for each article
     for i, article in enumerate(articles, 1):
         try:
-            logger.info(f"💾 Salvataggio articolo {i}/{len(articles)}: {article.title}")
-            logger.info("   📄 Creazione documento Google Docs...")
-            
-            doc_info = docs_service.create_document(
+            logger.info(f"📄 Generating PDF {i}/{len(articles)}: {article.title}")
+
+            pdf_bytes = pdf_generator.generate_article_pdf(
                 article=article,
-                image_base64=article.image_base64,
-                image_mime_type="image/png"  # Default, could be improved
+                include_image=(article.image_base64 is not None),
+                include_sources=True
             )
-            
-            docs.append(doc_info)
-            logger.info(f"   ✅ Documento creato: {doc_info.doc_url}")
+
+            pdf_results.append(pdf_bytes)
+            logger.info(f"   ✅ PDF generated: {len(pdf_bytes) / 1024:.1f} KB")
             logger.info("")
-            
+
         except Exception as e:
-            logger.error(f"   ❌ Errore salvataggio articolo '{article.title}': {str(e)}")
+            logger.error(f"   ❌ Error generating PDF for '{article.title}': {str(e)}")
             logger.info("")
             continue
-    
-    logger.info(f"📱 Invio notifica Telegram...")
-    logger.info(f"✅ Fase 5 completata: {len(docs)} documenti creati")
-    return docs
 
+    logger.info(f"✅ Phase 5 completed: {len(pdf_results)} PDFs generated")
+    logger.info(f"   Total size: {sum(len(p) for p in pdf_results) / 1024:.1f} KB")
+
+    return pdf_results

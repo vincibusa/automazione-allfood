@@ -21,20 +21,19 @@ class Settings:
     TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
     TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
     
-    # Google Docs - Service Account (preferito per automazioni)
-    GOOGLE_SERVICE_ACCOUNT_FILE: str = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE", "service_account.json")
-    GOOGLE_DOCS_FOLDER_ID: str = os.getenv("GOOGLE_DOCS_FOLDER_ID", "")
-    
-    # Google Docs - OAuth2 (alternativa, se non usi service account)
-    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
-    GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
-    GOOGLE_CREDENTIALS_FILE: str = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json")
-    GOOGLE_TOKEN_FILE: str = os.getenv("GOOGLE_TOKEN_FILE", "token.json")
+    # Google Docs - REMOVED: Articles are now sent as PDF via Telegram
+    # GOOGLE_SERVICE_ACCOUNT_FILE: str = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE", "service_account.json")
+    # GOOGLE_DOCS_FOLDER_ID: str = os.getenv("GOOGLE_DOCS_FOLDER_ID", "")
+    # GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
+    # GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET", "")
+    # GOOGLE_CREDENTIALS_FILE: str = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json")
+    # GOOGLE_TOKEN_FILE: str = os.getenv("GOOGLE_TOKEN_FILE", "token.json")
     
     # Execution settings
     DAILY_EXECUTION_HOUR: int = int(os.getenv("DAILY_EXECUTION_HOUR", "9"))
     MAX_ARTICLES_PER_RUN: int = int(os.getenv("MAX_ARTICLES_PER_RUN", "5"))
     DEBUG_MODE: bool = os.getenv("DEBUG_MODE", "false").lower() == "true"
+    TIMEZONE: str = os.getenv("TIMEZONE", "Europe/Rome")
     
     # Scraping settings
     MAX_CONCURRENT_SCRAPES: int = int(os.getenv("MAX_CONCURRENT_SCRAPES", "5"))  # Limite concorrenza scraping
@@ -60,26 +59,21 @@ class Settings:
     @classmethod
     def validate(cls) -> list[str]:
         """Validate that all required settings are present.
-        
+
         Returns:
             List of missing required settings (empty if all present)
         """
         missing = []
-        
+
         if not cls.GEMINI_API_KEY:
             missing.append("GEMINI_API_KEY")
-        # Firecrawl non più necessario - tutto con Gemini
         if not cls.TELEGRAM_BOT_TOKEN:
             missing.append("TELEGRAM_BOT_TOKEN")
         if not cls.TELEGRAM_CHAT_ID:
             missing.append("TELEGRAM_CHAT_ID")
-        # Verifica Service Account OPPURE OAuth2
-        service_account_exists = Path(cls.GOOGLE_SERVICE_ACCOUNT_FILE).exists()
-        oauth2_configured = cls.GOOGLE_CLIENT_ID and cls.GOOGLE_CLIENT_SECRET
-        
-        if not service_account_exists and not oauth2_configured:
-            missing.append("GOOGLE_SERVICE_ACCOUNT_FILE (o GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET)")
-        
+
+        # Google Docs no longer required - articles sent as PDF via Telegram
+
         return missing
 
 
