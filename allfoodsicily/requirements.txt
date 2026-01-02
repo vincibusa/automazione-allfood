@@ -1,0 +1,35 @@
+# AllFoodSicily Workflow - Dependencies
+# Python 3.10+ required
+
+# Google Gemini SDK
+google-genai>=1.0.0
+
+# Google APIs for Docs
+google-api-python-client>=2.100.0
+google-auth-httplib2>=0.1.0
+google-auth-oauthlib>=1.1.0
+
+# Firecrawl non più utilizzato - tutto con Gemini
+# firecrawl-py>=1.0.0
+
+# Telegram Bot
+python-telegram-bot>=20.7
+
+# Image processing
+Pillow>=10.0.0
+
+# Async support
+aiohttp>=3.9.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# Date handling
+python-dateutil>=2.8.2
+
+# Utilities
+tenacity>=8.2.0  # For retry logic
+structlog>=23.1.0  # For structured logging
+schedule>=1.2.0  # For task scheduling
+pydantic>=2.0.0  # For data validation
+
